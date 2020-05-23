@@ -37,12 +37,14 @@ function defaultSort(a: any, b: any): number {
 }
 
 type SortFn<U> = (a: U, b: U) => number;
+
 interface PropertySortFns<U> {
   [prop: string]: SortFn<U>;
 }
 
 /** RxJS operator to map a material Sort object to a sort function */
-function toSortFn<U>(sortFns: PropertySortFns<U> = {}, useDefault = true): (sort$: Observable<Sort>) => Observable<undefined | SortFn<U>> {
+function toSortFn<U>(sortFns: PropertySortFns<U> = {}, useDefault = true)
+  : (sort$: Observable<Sort>) => Observable<undefined | SortFn<U>> {
   return (sort$) => sort$.pipe(
     map(sort => {
       if (!sort.active || sort.direction === '') { return undefined; }
@@ -64,7 +66,8 @@ function toSortFn<U>(sortFns: PropertySortFns<U> = {}, useDefault = true): (sort
 }
 
 /** Creates an Observable stream of Sort objects from a MatSort component */
-export function fromMatSort(sort: MatSort): Observable<Sort> {
+export function fromMatSort(sort: MatSort)
+  : Observable<Sort> {
   return concat(
     defer(() => of({
       active: sort.active,
@@ -79,7 +82,8 @@ export function sortRows<U>(
   sort$: Observable<Sort>,
   sortFns: PropertySortFns<U> = {},
   useDefault = true
-): (obs$: Observable<U[]>) => Observable<U[]> {
+  ) 
+  : (obs$: Observable<U[]>) => Observable<U[]> {
   return (rows$: Observable<U[]>) => combineLatest(
     rows$,
     sort$.pipe(toSortFn(sortFns, useDefault)),
